@@ -7,7 +7,7 @@ export function statsGridColumnsFactory<T extends IStatItem>(metric: string, dat
         colId: level,
         headerName: METADATA_LABELS[level],
         field: level as ColDefField<T>,
-        rowGroup: true,
+        rowGroup: level !== "article",
         rowGroupIndex: index,
         initialHide: true,
     }));
