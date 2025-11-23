@@ -1,0 +1,38 @@
+export const resources = {
+    en: {
+        'page.title': 'Stats',
+        'page.description': 'Statistics Dashboard',
+        'metric.cost': 'Cost',
+        'metric.orders': 'Orders',
+        'metric.returns': 'Returns',
+        'metric.revenue': 'Revenue',
+        'metric.buyouts': 'Buyouts',
+        'meta.supplier': 'Supplier',
+        'meta.brand': 'Brand',
+        'meta.type': 'Type',
+        'meta.article': 'Article',
+        'grid.loading': 'Loading & Calculating...',
+        'grid.group_article': 'Group / Article',
+        'grid.sum': 'Sum',
+        'grid.avg': 'Average'
+    },
+    ru: {
+        'page.title': 'Статистика',
+        'page.description': 'Дашборд статистики',
+        'metric.cost': 'Цена',
+        'metric.orders': 'Заказы',
+        'metric.returns': 'Возвраты',
+        'metric.revenue': 'Выручка',
+        'metric.buyouts': 'Выкупы',
+        'meta.supplier': 'Поставщик',
+        'meta.brand': 'Бренд',
+        'meta.type': 'Тип',
+        'meta.article': 'Артикул',
+        'grid.loading': 'Загрузка и расчет...',
+        'grid.group_article': 'Группа / Артикул',
+        'grid.sum': 'Сумма',
+        'grid.avg': 'Среднее'
+    }
+} as const;
+
+export type TranslationKey = keyof typeof resources.en;

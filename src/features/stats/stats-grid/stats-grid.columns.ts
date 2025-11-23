@@ -1,11 +1,14 @@
 import { ColDef, ColDefField, ValueFormatterParams, ValueGetterParams } from 'ag-grid-enterprise';
 import { IStatItem, ORDERED_LEVELS } from '../../../types/stats.types';
-import { METADATA_LABELS } from '../stats.const';
+import { TranslationKey } from '../../i18n/resources';
 
-export function statsGridColumnsFactory<T extends IStatItem>(metric: string, dates: string[]) {
+export function statsGridColumnsFactory<T extends IStatItem>(
+    metric: string,
+    dates: string[],
+    t: (key: TranslationKey) => string) {
     const metadataColumns: ColDef<T>[] = ORDERED_LEVELS.map((level, index) => ({
         colId: level,
-        headerName: METADATA_LABELS[level],
+        headerName: t(`meta.${level}` as TranslationKey),
         field: level as ColDefField<T>,
         rowGroup: level !== "article",
         rowGroupIndex: index,
@@ -14,7 +17,7 @@ export function statsGridColumnsFactory<T extends IStatItem>(metric: string, dat
 
     const sumColumn: ColDef<T> = {
         colId: 'sums',
-        headerName: 'Sum',
+        headerName: t('grid.sum'),
         valueGetter: (params: ValueGetterParams<T>) => {
             return params.data?.sums?.[metric as keyof typeof params.data.sums] ?? 0;
         },
@@ -24,7 +27,7 @@ export function statsGridColumnsFactory<T extends IStatItem>(metric: string, dat
     };
     const averageColumn: ColDef<T> = {
         colId: 'average',
-        headerName: 'Average',
+        headerName: t('grid.avg'),
         valueGetter: (params: ValueGetterParams<T>) => {
             return params.data?.average?.[metric as keyof typeof params.data.average] ?? 0;
         },

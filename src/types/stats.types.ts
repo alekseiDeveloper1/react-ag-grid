@@ -39,3 +39,5 @@ export interface IStatItem extends IStatItemRaw {
         buyouts: number;
     };
 }
+
+export type StatMetricType = 'cost' | 'orders' | 'returns' | 'revenue' | 'buyouts';
