@@ -11,9 +11,9 @@ export function StatsMetricSelector() {
     const metricSearchParam = searchParams.get('metric');
     const value = useMemo(() => (metricSearchParam && isMetric(metricSearchParam) ? metricSearchParam : Metrics.cost), [metricSearchParam]);
 
-    const options = Object.values(Metrics).map(m => ({
+    const options = Object.values(Metrics).map((m) => ({
         value: m,
-        label: t(`metric.${m}` as TranslationKey)
+        label: t(`metric.${m}` as TranslationKey),
     }));
 
     return (
@@ -25,8 +25,10 @@ export function StatsMetricSelector() {
                 setSearchParams({ metric: e.target.value });
             }}
         >
-            {options.map(opt => (
-                <option key={opt.value} value={opt.value}>{opt.label}</option>
+            {options.map((opt) => (
+                <option key={opt.value} value={opt.value}>
+                    {opt.label}
+                </option>
             ))}
         </Form.Select>
     );

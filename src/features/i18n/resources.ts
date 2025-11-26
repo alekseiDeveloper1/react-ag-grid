@@ -14,7 +14,7 @@ export const resources = {
         'grid.loading': 'Loading & Calculating...',
         'grid.group_article': 'Group / Article',
         'grid.sum': 'Sum',
-        'grid.avg': 'Average'
+        'grid.avg': 'Average',
     },
     ru: {
         'page.title': 'Статистика',
@@ -31,8 +31,8 @@ export const resources = {
         'grid.loading': 'Загрузка и расчет...',
         'grid.group_article': 'Группа / Артикул',
         'grid.sum': 'Сумма',
-        'grid.avg': 'Среднее'
-    }
+        'grid.avg': 'Среднее',
+    },
 } as const;
 
 export type TranslationKey = keyof typeof resources.en;

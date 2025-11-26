@@ -1,20 +1,44 @@
-import Dixie, { Table } from 'dexie';
-import { IStatItem, Levels } from '../types/stats.types';
+import Dexie, { Table } from 'dexie';
+import { IStatItemRaw } from '../types/stats.types';
 
-export class AdStatsDatabase extends Dixie {
-    [Levels.supplier]!: Table<IStatItem>;
-    [Levels.article]!: Table<IStatItem>;
-    [Levels.brand]!: Table<IStatItem>;
-    [Levels.type]!: Table<IStatItem>;
+const DB_NAME = 'AdStatsDB';
+const CACHE_TABLE = 'raw_stats_cache';
 
-    constructor(user_uuid: string) {
-        super(user_uuid);
+interface ICacheEntry {
+    id: string;
+    timestamp: number;
+    data: IStatItemRaw[];
+}
+
+export class AdStatsDatabase extends Dexie {
+    [CACHE_TABLE]!: Table<ICacheEntry>;
+
+    constructor() {
+        super(DB_NAME);
 
         this.version(1).stores({
-            [Levels.article]: '++article',
-            [Levels.brand]: '++brand',
-            [Levels.type]: '++type',
-            [Levels.supplier]: '++supplier',
+            [CACHE_TABLE]: 'id',
         });
     }
+
+    async saveStats(key: string, data: IStatItemRaw[]) {
+        await this[CACHE_TABLE].put({
+            id: key,
+            timestamp: Date.now(),
+            data,
+        });
+    }
+
+    async getStats(key: string, maxAgeMs: number = 24 * 60 * 60 * 1000): Promise<IStatItemRaw[] | null> {
+        const entry = await this[CACHE_TABLE].get(key);
+        if (!entry) return null;
+
+        if (Date.now() - entry.timestamp > maxAgeMs) {
+            return null;
+        }
+
+        return entry.data;
+    }
 }
+
+export const db = new AdStatsDatabase();

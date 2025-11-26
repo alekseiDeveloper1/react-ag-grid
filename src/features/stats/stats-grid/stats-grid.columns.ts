@@ -1,51 +1,55 @@
-import { ColDef, ColDefField, ValueFormatterParams, ValueGetterParams } from 'ag-grid-enterprise';
-import { IStatItem, ORDERED_LEVELS } from '../../../types/stats.types';
+import { ColDef, ColDefField, ValueFormatterParams } from 'ag-grid-enterprise';
+import { IStatItem, IStatItemProcessed, ORDERED_LEVELS } from '../../../types/stats.types';
 import { TranslationKey } from '../../i18n/resources';
 
-export function statsGridColumnsFactory<T extends IStatItem>(
-    metric: string,
-    dates: string[],
-    t: (key: TranslationKey) => string) {
+export function statsGridColumnsFactory<T extends IStatItem>(dates: string[], t: (key: TranslationKey) => string) {
     const metadataColumns: ColDef<T>[] = ORDERED_LEVELS.map((level, index) => ({
         colId: level,
         headerName: t(`meta.${level}` as TranslationKey),
         field: level as ColDefField<T>,
-        rowGroup: level !== "article",
+        rowGroup: level !== 'article',
         rowGroupIndex: index,
         initialHide: true,
     }));
 
-    const sumColumn: ColDef<T> = {
+    const sumColumn: ColDef<IStatItemProcessed> = {
         colId: 'sums',
         headerName: t('grid.sum'),
-        valueGetter: (params: ValueGetterParams<T>) => {
-            return params.data?.sums?.[metric as keyof typeof params.data.sums] ?? 0;
-        },
-        valueFormatter: (params: ValueFormatterParams<T>) => {
+        field: 'row_sum',
+        aggFunc: 'sum',
+        pinned: 'right',
+        width: 100,
+        valueFormatter: (params: ValueFormatterParams) => {
             return params.value?.toLocaleString() ?? '';
         },
     };
-    const averageColumn: ColDef<T> = {
+    const averageColumn: ColDef<IStatItemProcessed> = {
         colId: 'average',
         headerName: t('grid.avg'),
-        valueGetter: (params: ValueGetterParams<T>) => {
-            return params.data?.average?.[metric as keyof typeof params.data.average] ?? 0;
-        },
-        valueFormatter: (params: ValueFormatterParams<T>) => {
-            return params.value?.toLocaleString() ?? '';
+        field: 'row_avg',
+        aggFunc: 'avg',
+        pinned: 'right',
+        width: 100,
+        valueFormatter: (params: ValueFormatterParams) => {
+            const value = typeof params.value === 'object' && params.value !== null ? params.value.value : params.value;
+
+            if (typeof value !== 'number' || isNaN(value)) {
+                return '';
+            }
+
+            return Math.round(value).toLocaleString();
         },
     };
 
-    const datesColumns: ColDef<T>[] = dates.map((date, index) => ({
+    const datesColumns: ColDef<IStatItemProcessed>[] = dates.map((date, index) => ({
         headerName: date,
-        colId: `${index}`,
-        valueGetter: (params: ValueGetterParams<T>) => {
-            return params.data?.[metric as 'cost' | 'orders' | 'returns' | 'revenue' | 'buyouts']?.[index] ?? 0;
-        },
-        valueFormatter: (params: ValueFormatterParams<T>) => {
+        field: `day_${index}`,
+        aggFunc: 'sum',
+        width: 110,
+        valueFormatter: (params: ValueFormatterParams) => {
             return params.value?.toLocaleString() ?? '';
         },
     }));
 
-    return [...metadataColumns, sumColumn, averageColumn, ...datesColumns];
+    return [...metadataColumns, ...datesColumns, sumColumn, averageColumn];
 }

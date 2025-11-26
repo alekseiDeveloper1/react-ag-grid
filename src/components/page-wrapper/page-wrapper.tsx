@@ -1,7 +1,7 @@
 import { PageHeader, PageHeaderProps } from '../page-header/page-header';
 import './page-wrapper.scss';
 
-interface Props extends React.PropsWithChildren<PageHeaderProps> {}
+type Props = React.PropsWithChildren<PageHeaderProps>;
 
 export function PageWrapper({ children, ...pageHeaderProps }: Props) {
     return (

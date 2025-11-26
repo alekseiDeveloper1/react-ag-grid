@@ -26,6 +26,7 @@ class StatsApi {
 
             setInterval(() => {
                 if (this.resolvedMessages.has(requestId)) {
+                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                     resolve(this.resolvedMessages.get(requestId)!);
                     this.resolvedMessages.delete(requestId);
                 }

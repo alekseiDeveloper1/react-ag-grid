@@ -8,7 +8,7 @@ export enum Levels {
 export const ORDERED_LEVELS = [Levels.supplier, Levels.brand, Levels.type, Levels.article] as const;
 
 // данные с бэкенда
-interface IStatItemRaw {
+export interface IStatItemRaw {
     type: string; // тип
     article: string; // артикул
     brand: string; // бренд
@@ -41,3 +41,20 @@ export interface IStatItem extends IStatItemRaw {
 }
 
 export type StatMetricType = 'cost' | 'orders' | 'returns' | 'revenue' | 'buyouts';
+
+export interface WorkerMessage {
+    action: 'processData';
+    payload: {
+        raw: IStatItemRaw[];
+        metric: StatMetricType;
+    };
+}
+
+export interface IStatItemProcessed extends Omit<IStatItemRaw, 'cost' | 'orders' | 'returns' | 'lastUpdate'> {
+    [key: `day_${number}`]: number;
+
+    row_sum: number;
+    row_avg: number;
+
+    id: string;
+}
